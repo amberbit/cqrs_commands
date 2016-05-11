@@ -8,7 +8,8 @@ defmodule Cqrs.Commands do
 
     children = [
       # Define workers and child supervisors to be supervised
-      worker(Cqrs.Commands.Server, [Cqrs.Commands.Server])
+      worker(Cqrs.Commands.Handlers, [Cqrs.Commands.Handlers]),
+      worker(Cqrs.Commands.Server, [Cqrs.Commands.Server]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

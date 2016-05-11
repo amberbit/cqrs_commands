@@ -1,9 +1,10 @@
 defmodule Cqrs.Commands.Server do
   use GenServer
+  alias Cqrs.Commands.Handlers
 
   # GenServer API
   def start_link(name) do
-    GenServer.start_link(__MODULE__, %{}, [name: name])
+    GenServer.start_link(__MODULE__, Handlers.handlers, [name: name])
   end
 
   # Public API
@@ -18,8 +19,9 @@ defmodule Cqrs.Commands.Server do
 
   # Private API
 
-  def handle_call({:add_command, command_name, module, reqs}, _from, handlers) do
-    handlers = Map.put handlers, command_name, {module, reqs}
+  def handle_call({:add_command, command_name, module, reqs}, _from, _) do
+    handlers = Handlers.add_handler(command_name, {module, reqs})
+
     {:reply, handlers, handlers}
   end
 
