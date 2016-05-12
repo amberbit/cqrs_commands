@@ -28,11 +28,8 @@ defmodule Cqrs.Commands.Server do
   def handle_call({:command, cmd_name, cmd_arguments, cmd_env}, _from, handlers) do
     result = case handlers[cmd_name] do
       nil -> {:error, :unknown_command}
-      { module, reqs } -> if reqs_met?(cmd_env, reqs) do
-        cmd_response(module.execute(cmd_arguments, cmd_env))
-      else
-        {:error, :requirements_not_met}
-      end
+      { module, reqs } -> try_command(module, cmd_arguments, cmd_env, reqs)
+      _ -> {:error, :bad_handler}
     end
 
     {:reply, result, handlers}
@@ -48,5 +45,23 @@ defmodule Cqrs.Commands.Server do
 
   defp reqs_met?(_env, []), do: true
   defp reqs_met?(env, reqs), do: (reqs |> Enum.all?(&(env[&1])))
+
+  defp try_command(module, cmd_arguments, cmd_env, reqs) do
+    case reqs_met?(cmd_env, reqs) do
+      true -> if is_valid_command?(module) do
+        cmd_response(module.execute(cmd_arguments, cmd_env))
+      else
+        {:error, :invalid_command_implementation}
+      end
+      false -> {:error, :requirements_not_met}
+    end
+  end
+
+  def is_valid_command?(module) do
+    case Code.ensure_loaded(module) do
+      {:module, _} -> module.module_info(:exports)[:execute] == 2
+      _ -> false
+    end
+  end
 end
 

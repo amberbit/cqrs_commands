@@ -62,5 +62,18 @@ defmodule Cqrs.Commands.ServerTest do
 
     {:error, :invalid_return} = Server.command("LogIn")
   end
+
+  test "prevents calling commands that do not exist" do
+    Server.add_command "LogIn", IAmNotEvenAModule
+
+    {:error, :invalid_command_implementation} = Server.command("LogIn")
+  end
+
+  test "prevents calling commands that do not have execute/2 function" do # TODO: do better
+    Server.add_command "LogIn", String
+
+    {:error, :invalid_command_implementation} = Server.command("LogIn")
+  end
+
 end
 

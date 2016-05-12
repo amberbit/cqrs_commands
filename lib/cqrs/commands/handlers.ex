@@ -13,6 +13,6 @@ defmodule Cqrs.Commands.Handlers do
   end
 
   defp read_handlers_from_config do
-    Application.get_env(:cqrs, :commands) || %{}
+    Application.get_env(:cqrs_commands, :handlers) || %{}
   end
 end
