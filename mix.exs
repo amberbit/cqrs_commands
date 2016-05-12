@@ -8,6 +8,8 @@ defmodule Cqrs.Commands.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps,
+     description: description,
+     package: package,
      consolidate_protocols: Mix.env != :test,
    ]
   end
@@ -32,8 +34,25 @@ defmodule Cqrs.Commands.Mixfile do
   defp deps do
     [
       {:exconstructor, "~> 1.0.2"},
-      {:vex, github: "hubertlepicki/vex"},
+      {:vex, "~> 0.5.5"},
       {:uuid, "~> 1.1"},
     ]
   end
+
+  defp description do
+      """
+        This is not production ready yet. Move along.
+          """
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README.md"],
+      maintainers: ["Hubert Łępicki"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/amberbit/cqrs_commands",
+        "Docs" => "http://hexdocs.pm/cqrs_commands/"}
+    ]
+  end
 end
+
