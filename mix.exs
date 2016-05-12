@@ -36,6 +36,7 @@ defmodule Cqrs.Commands.Mixfile do
       {:exconstructor, "~> 1.0.2"},
       {:vex, "~> 0.5.5"},
       {:uuid, "~> 1.1"},
+      {:plug, "~> 1.1.4"},
     ]
   end
 

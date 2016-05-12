@@ -46,7 +46,7 @@ defmodule Cqrs.Commands.Server do
     end
   end
 
-  defp reqs_met?(env, []), do: true
+  defp reqs_met?(_env, []), do: true
   defp reqs_met?(env, reqs), do: (reqs |> Enum.all?(&(env[&1])))
 end
 
