@@ -1,5 +1,5 @@
 defmodule Cqrs.Commands.ServerTest.LogInCommand do
-  def execute(arguments, environment) do
+  def execute(arguments, _environment) do
     if arguments["email"] == "user@example.com" && arguments["password"] == "123password" do
       :ok
     else
@@ -9,7 +9,7 @@ defmodule Cqrs.Commands.ServerTest.LogInCommand do
 end
 
 defmodule Cqrs.Commands.ServerTest.InvalidReturnCommand do
-  def execute(arguments, environment) do
+  def execute(_arguments, _environment) do
     1
   end
 end
