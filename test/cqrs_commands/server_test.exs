@@ -1,17 +1,25 @@
 defmodule Cqrs.Commands.ServerTest.LogInCommand do
-  def execute(form, environment) do
-    if form["email"] == "user@example.com" && form["password"] == "123password" do
+  def execute(arguments, environment) do
+    if arguments["email"] == "user@example.com" && arguments["password"] == "123password" do
       :ok
     else
-      {:error, %{"password" => ["is not valid"]}}
+      {:error, %{password: ["is not valid"]}}
     end
   end
 end
+
+defmodule Cqrs.Commands.ServerTest.InvalidReturnCommand do
+  def execute(arguments, environment) do
+    1
+  end
+end
+
 
 defmodule Cqrs.Commands.ServerTest do
   use ExUnit.Case
   alias Cqrs.Commands.Server
   alias Cqrs.Commands.ServerTest.LogInCommand
+  alias Cqrs.Commands.ServerTest.InvalidReturnCommand
 
   doctest Cqrs.Commands.Server
 
@@ -47,6 +55,12 @@ defmodule Cqrs.Commands.ServerTest do
     Server.add_command "LogIn", LogInCommand, [:domain]
 
     {:error, :requirements_not_met} = Server.command("LogIn", %{"email" => "user@example.com", "password" => "123password"})
+  end
+
+  test "prevents commands from returning improper return values" do
+    Server.add_command "LogIn", InvalidReturnCommand
+
+    {:error, :invalid_return} = Server.command("LogIn")
   end
 end
 

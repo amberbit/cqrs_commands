@@ -9,27 +9,27 @@ defmodule Cqrs.Commands.Server do
 
   # Public API
 
-  def add_command(command_name, module, environment_requirements \\ []) do
-    GenServer.call(__MODULE__, {:add_command, command_name, module, environment_requirements})
+  def add_command(cmd_name, module, env_reqs \\ []) do
+    GenServer.call(__MODULE__, {:add_command, cmd_name, module, env_reqs})
   end
 
-  def command(command_name, command_arguments \\ %{}, command_environment \\ %{}) do
-    GenServer.call(__MODULE__, {:command, command_name, command_arguments, command_environment})
+  def command(cmd_name, cmd_arguments \\ %{}, cmd_env \\ %{}) do
+    GenServer.call(__MODULE__, {:command, cmd_name, cmd_arguments, cmd_env})
   end
 
   # Private API
 
-  def handle_call({:add_command, command_name, module, reqs}, _from, _) do
-    handlers = Handlers.add_handler(command_name, {module, reqs})
+  def handle_call({:add_command, cmd_name, module, reqs}, _from, _) do
+    handlers = Handlers.add_handler(cmd_name, {module, reqs})
 
     {:reply, handlers, handlers}
   end
 
-  def handle_call({:command, command_name, command_arguments, command_environment}, _from, handlers) do
-    result = case handlers[command_name] do
+  def handle_call({:command, cmd_name, cmd_arguments, cmd_env}, _from, handlers) do
+    result = case handlers[cmd_name] do
       nil -> {:error, :unknown_command}
-      { module, reqs } -> if requirements_met?(command_environment, reqs) do
-        module.execute(command_arguments, command_environment)
+      { module, reqs } -> if reqs_met?(cmd_env, reqs) do
+        cmd_response(module.execute(cmd_arguments, cmd_env))
       else
         {:error, :requirements_not_met}
       end
@@ -38,13 +38,15 @@ defmodule Cqrs.Commands.Server do
     {:reply, result, handlers}
   end
 
-  defp requirements_met?(env, []) do
-    true
+  defp cmd_response(return_value) do
+    case return_value do
+      :ok -> :ok
+      {:error, _} -> return_value
+      _ -> {:error, :invalid_return}
+    end
   end
 
-  defp requirements_met?(env, reqs) do
-    reqs
-    |> Enum.all?(&(env[&1]))
-  end
+  defp reqs_met?(env, []), do: true
+  defp reqs_met?(env, reqs), do: (reqs |> Enum.all?(&(env[&1])))
 end
 
