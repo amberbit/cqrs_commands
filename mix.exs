@@ -43,7 +43,7 @@ defmodule Cqrs.Commands.Mixfile do
 
   defp description do
       """
-        This is not production ready yet. Move along.
+        This is not production ready yet but I want your feedback.
           """
   end
 
