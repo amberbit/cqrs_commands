@@ -37,7 +37,7 @@ defmodule Cqrs.Commands.Mixfile do
       {:vex, "~> 0.5.5"},
       {:uuid, "~> 1.1"},
       {:plug, "~> 1.1.4"},
-      {:poison, "~> 2.1.0"}
+      {:poison, "~> 2.0.1"}
     ]
   end
 
