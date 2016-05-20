@@ -38,6 +38,7 @@ defmodule Cqrs.Commands.Server do
   defp cmd_response(return_value) do
     case return_value do
       :ok -> :ok
+      {:ok, data} -> {:ok, data}
       {:error, _} -> return_value
       _ -> {:error, :invalid_return}
     end

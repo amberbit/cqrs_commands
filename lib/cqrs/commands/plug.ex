@@ -23,6 +23,11 @@ defmodule Cqrs.Commands.Plug do
     send_resp(conn, 200, encoder().encode_to_iodata!(data))
   end
 
+  def send_response_json(conn, {:ok, data}) do
+    data = %{data: data}
+    send_resp(conn, 200, encoder().encode_to_iodata!(data))
+  end
+
   def send_response_json(conn, {:error, message}) when is_atom(message) do
     data = %{data: %{error: message}}
     send_resp(conn, 400, encoder().encode_to_iodata!(data))

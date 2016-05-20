@@ -29,10 +29,6 @@ defmodule Cqrs.Commands.ServerTest do
     :ok
   end
 
-  test "adds an event handler" do
-    assert %{"LogIn" => { LogInCommand, []} } == Server.add_command "LogIn", LogInCommand
-  end
-
   test "executes command handler" do
     Server.add_command "LogIn", LogInCommand
 
