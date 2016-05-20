@@ -4,7 +4,7 @@ defmodule Cqrs.Command do
       alias __MODULE__.Form
 
       def trigger(event, payload) do
-        Cqrs.Events.Server.trigger event, payload \\ %{}
+        Cqrs.Events.Server.trigger(event, payload \\ %{})
       end
     end
   end
